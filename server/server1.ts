@@ -1,34 +1,17 @@
 import express from 'express';
-import https from 'https';
+import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
 
 const app = express();
 app.use(cors());
 
-// SSL Certificate Configuration
-const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.cert')),
-  // For additional security (optional):
-  // ca: fs.readFileSync(path.join(__dirname, 'ssl', 'ca.pem')),
-  // requestCert: true,
-  // rejectUnauthorized: false
-};
-
-const server = https.createServer(sslOptions, app);
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*", // In production, replace with your frontend URLs
+    origin: "*",
     methods: ["GET", "POST"]
-  },
-  // Optional: Enable HTTPS for Socket.IO if needed
-  // transports: ['websocket', 'polling'],
-  // serveClient: false,
-  // pingTimeout: 60000,
-  // pingInterval: 25000
+  }
 });
 
 interface Room {
@@ -101,9 +84,11 @@ io.on('connection', (socket) => {
       }
     }
   });
+  
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
+    // Clean up all rooms this user was in
     for (const roomId in rooms) {
       const index = rooms[roomId].users.indexOf(socket.id);
       if (index !== -1) {
@@ -117,12 +102,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'healthy' });
-});
-
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`HTTPS server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
