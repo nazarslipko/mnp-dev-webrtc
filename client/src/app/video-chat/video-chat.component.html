@@ -1,0 +1,37 @@
+<div class="container">
+    <h1>WebRTC Video Chat</h1>
+    
+    <div *ngIf="!isInRoom" class="room-actions">
+      <div class="action-group">
+        <button (click)="createRoom()" class="btn btn-primary">Create New Room</button>
+      </div>
+      
+      <div class="action-group">
+        <input [(ngModel)]="roomId" placeholder="Enter Room ID" class="form-control">
+        <button (click)="joinRoom()" class="btn btn-secondary">Join Room</button>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+    </div>
+  
+    <div *ngIf="isInRoom" class="video-chat-container">
+      <div class="room-info">
+        <h3>Room ID: {{ roomId }}</h3>
+        <button (click)="leaveRoom()" class="btn btn-warning">Leave Room</button>
+      </div>
+      
+      <div class="video-grid">
+        <div class="video-container">
+          <h4>You</h4>
+          <video autoplay muted [srcObject]="localStream" class="video-element"></video>
+        </div>
+        
+        <div class="video-container" *ngFor="let stream of getRemoteStreams(); let i = index">
+          <h4>Participant {{ i + 1 }}</h4>
+          <video autoplay [srcObject]="stream" class="video-element"></video>
+        </div>
+      </div>
+    </div>
+  </div>
