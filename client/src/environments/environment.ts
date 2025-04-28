@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    socketUrl: 'http://localhost:3000'
+    socketUrl: 'https://media-api.meet-n-pray.com:3000'
   };

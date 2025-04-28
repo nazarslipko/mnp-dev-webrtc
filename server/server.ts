@@ -10,8 +10,8 @@ app.use(cors());
 
 // SSL Certificate Configuration
 const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.cert')),
+  key: fs.readFileSync(path.join(__dirname, 'ssl', 'privkey1.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'cert1.pem')),
   // For additional security (optional):
   // ca: fs.readFileSync(path.join(__dirname, 'ssl', 'ca.pem')),
   // requestCert: true,
