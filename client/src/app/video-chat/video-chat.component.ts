@@ -1,5 +1,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
 import { WebRTCService } from '../services/webrtc.service';
 
 @Component({
@@ -16,7 +18,7 @@ export class VideoChatComponent implements OnInit, OnDestroy {
   isRoomCreator: boolean = false;
   errorMessage: string = '';
 
-  constructor(private webRTCService: WebRTCService) {}
+  constructor(private webRTCService: WebRTCService, private route: ActivatedRoute) {}
 
   async ngOnInit(): Promise<void> {
     try {
@@ -29,11 +31,25 @@ export class VideoChatComponent implements OnInit, OnDestroy {
     this.webRTCService.remoteStreams$.subscribe(streams => {
       this.remoteStreams = streams;
     });
+
+    this.route.queryParams.subscribe(params => {
+      const MeetingId = params['MeetingId'];
+      const host = params['host'];
+      console.log('ID parameter:', MeetingId);
+      console.log('host parameter:', host);
+
+      if(host == 'host') {
+        this.createRoom(MeetingId)
+      } else {
+        this.roomId = MeetingId;
+        this.joinRoom()
+      }
+    });
   }
 
-  async createRoom(): Promise<void> {
+  async createRoom(MeetingId: any): Promise<void> {
     try {
-      this.roomId = await this.webRTCService.createRoom();
+      this.roomId = await this.webRTCService.createRoom(MeetingId);
       this.isInRoom = true;
       this.isRoomCreator = true;
       this.errorMessage = '';

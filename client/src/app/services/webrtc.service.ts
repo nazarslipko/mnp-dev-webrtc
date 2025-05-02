@@ -61,9 +61,9 @@ export class WebRTCService {
     });
   }
 
-  async createRoom(): Promise<string> {
+  async createRoom(roomId: any): Promise<string> {
     return new Promise((resolve) => {
-      const roomId = Math.random().toString(36).substring(2, 8);
+      // const roomId = Math.random().toString(36).substring(2, 8);
       this.socket.emit('createRoom', roomId, (success: boolean) => {
         if (success) {
           this.currentRoom = roomId;
@@ -141,7 +141,7 @@ export class WebRTCService {
       event.streams[0].getTracks().forEach(track => {
         remoteStream.addTrack(track);
       });
-      
+
       const currentRemoteStreams = this.remoteStreamsSubject.value;
       this.remoteStreamsSubject.next({
         ...currentRemoteStreams,
@@ -167,7 +167,7 @@ export class WebRTCService {
     if (pc) {
       pc.close();
       delete this.peerConnections[userId];
-      
+
       const currentRemoteStreams = this.remoteStreamsSubject.value;
       if (currentRemoteStreams[userId]) {
         const newRemoteStreams = { ...currentRemoteStreams };
