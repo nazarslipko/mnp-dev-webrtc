@@ -56,10 +56,10 @@ io.on('connection', (socket) => {
       callback(false);
       return;
     }
-    if (rooms[roomId].users.length >= 2) {
-      callback(false);
-      return;
-    }
+    // if (rooms[roomId].users.length >= 2) {
+    //   callback(false);
+    //   return;
+    // }
     rooms[roomId].users.push(socket.id);
     socket.join(roomId);
     callback(true);
